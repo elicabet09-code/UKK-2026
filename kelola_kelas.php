@@ -1,37 +1,38 @@
 <?php
-// kelola_siswa.php
+// kelola_kelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-$sql = "SELECT * FROM t_siswa ORDER BY nama ASC";
+$sql = "SELECT * FROM t_kelas ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Kelola siswa</title>
+    <title>Kelola Kelas</title>
 </head>
 
 <body>
 
-    <h1>Kelola siswa</h1>
+    <h1>Kelola Kelas</h1>
 
     <p>
         <a href="dashboard.php">Kembali ke Dashboard</a> |
-        <a href="tambah_siswa.php">Tambah siswa</a>
+        <a href="tambah_kelas.php">Tambah Kelas</a>
     </p>
 
     <table border="1" cellpadding="6" cellspacing="0">
 
         <tr>
-            <th>NIS</th>
-            <th>NISN</th>
-            <th>Nama</th>
-            <th>Jenis kelamin</th>
-            <th>tanggal lahir</th>
-            <th>alamat</th>
+            <th>ID</th>
+            <th>Nama Kelas</th>
+            <th>Tingkat</th>
+            <th>Jurusan</th>
             <th>Status Aktif</th>
+            <th>Dibuat</th>
+            <th>Diubah</th>
             <th>Aksi</th>
         </tr>
 
@@ -39,22 +40,13 @@ $hasil = mysqli_query($koneksi, $sql);
 
         <tr>
 
-            <td><?php echo $row['nis']; ?></td>
-
-            <td><?php echo $row['nisn']; ?></td>
+            <td><?php echo $row['id']; ?></td>
 
             <td><?php echo $row['nama']; ?></td>
 
-            <td><?php echo $row['jenis_kelamin']; ?></td>
+            <td><?php echo $row['tingkat']; ?></td>
 
-            <td><?php echo $row['tanggal_lahir']; ?></td>
-
-            <td><?php echo $row['alamat']; ?></td>
-
-            <td><?php echo $row['status_aktif']; ?></td>
-
-
-
+            <td><?php echo $row['jurusan']; ?></td>
 
             <td>
                 <?php
@@ -66,15 +58,19 @@ $hasil = mysqli_query($koneksi, $sql);
                 ?>
             </td>
 
+            <td><?php echo $row['created_at']; ?></td>
+
+            <td><?php echo $row['updated_at']; ?></td>
+
             <td>
-                <a href="edit_siswa.php?id=<?php echo $row['id']; ?>">
+                <a href="edit_kelas.php?id=<?php echo $row['id']; ?>">
                     Edit
                 </a>
 
                 |
 
-                <a href="hapus_siswa.php?id=<?php echo $row['id']; ?>"
-                   onclick="return confirm('Yakin ingin menghapus data guru ini?');">
+                <a href="hapus_kelas.php?id=<?php echo $row['id']; ?>"
+                   onclick="return confirm('Yakin ingin menghapus data kelas ini?');">
                     Hapus
                 </a>
             </td>
