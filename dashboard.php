@@ -1,13 +1,8 @@
 <?php
-// Memeriksa session login
-include "includes/cek_session.php";
-
-// Mengambil data pengguna
-$nama = $_SESSION['nama'] ?? $_SESSION['nama_lengkap'] ?? 'Pengguna';
-$email = $_SESSION['email'] ?? '-';
-$role = $_SESSION['role'] ?? '-';
+//dashboard.php
+include 'includes/cek_session.php';
 ?>
-
+<!DOCYTPE html>
 
 <!DOCTYPE html>
 <html>
@@ -15,9 +10,9 @@ $role = $_SESSION['role'] ?? '-';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Dashboard</title>
 </head>
+
 <body>
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
-<script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
+
 <div class="container-fluid">
     <div class="row">
         <!-- SIDEBAR -->
@@ -43,41 +38,38 @@ $role = $_SESSION['role'] ?? '-';
                 </li>
                 <li class="nav-item mb-2">
                     <a href="kelola_kelas.php" class="nav-link text-white">
-                        Kelas
+                        Data Kelas
                     </a>
                 </li>
-                 <li class="nav-item mb-2">
+                <li class="nav-item mb-2">
                     <a href="kelola_tahun_ajaran.php" class="nav-link text-white">
                         Tahun Ajaran
                     </a>
-                </li>
+                      </li>
                 <li class="nav-item mb-2">
                     <a href="penempatan_siswa.php" class="nav-link text-white">
                         Penempatan Siswa
-                    </a>
+                    </a> 
+                      </li>
                 <li class="nav-item mb-2">
-                    <a href="kelola_wali_kelas.php" class="nav-link text-white">
+                    <a href="wali_kelas.php" class="nav-link text-white">
                         Wali Kelas
-                    </a>
-                </li>
+                    </a> 
+                      </li>
                 <li class="nav-item mb-2">
-                    <a href="kelola_kategori_pelanggaran.php" class="nav-link text-white">
+                    <a href="kategori_pelanggaran.php" class="nav-link text-white">
                         Kategori Pelanggaran
-                    </a>
-                    <li class="nav-item mb-2">
-                    <a href="kelola_jenis_pelanggaran.php" class="nav-link text-white">
-                        Jenis Pelanggaran
-                    </a>
-                </li>
+                    </a> 
+                      </li>
                 <li class="nav-item mb-2">
                     <a href="laporan.php" class="nav-link text-white">
                         Laporan
-                    </a>
+                    </a> 
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="about_me.php" class="nav-link text-white">
+                    <a href="aboutme.php" class="nav-link text-white">
                         About Me
-                    </a>
+                    </a> 
                 </li>
                 <hr class="text-secondary">
                 <li class="nav-item">
@@ -149,53 +141,36 @@ $role = $_SESSION['role'] ?? '-';
 </body>
 </html>
 
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <title>Dashboard Pelanggaran Siswa</title>
-</head>
-<body>
 
-    <h1>Dashboard Aplikasi Pelanggaran Siswa</h1>
+        <title>dashboard - Pelanggaran Siswa</title>
+    <head>
+    <body>
+         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-    <!-- Menampilkan data pengguna -->
-    <p>Selamat datang, <b><?php echo $nama; ?></b></p>
-    <p>Email: <?php echo $email; ?></p>
-    <p>Role: <?php echo $role; ?></p>
+        <h1>selamat datang, <?php echo $_SESSION['name']; ?></h1>
+        <p>anda login sebagai: <?php echo $_SESSION['role']; ?></p>
 
-    <hr>
 
-    <?php
-    // Menu untuk admin
-    if ($role == 'admin') {
-        echo "<h3>Menu Admin</h3>";
-        echo '<p><a href="kelola_guru.php">Kelola Guru</a></p>';
-        echo '<p><a href="kelola_siswa.php">Kelola Siswa</a></p>';
-        echo '<p><a href="kelola_kelas.php">Kelola Kelas</a></p>';
-        echo '<p><a href="kelola_tahun_ajaran.php">Kelola Tahun Ajaran</a></p>';
-        echo '<p><a href="penempatan_siswa.php">Penempatan Siswa</a></p>';
-        echo '<p><a href="kelola_wali_kelas.php">Kelola Wali Kelas</a></p>';
-        echo '<p><a href="kelola_kategori_pelanggaran.php">Kelola Kategori Pelanggaran</a></p>';
-        echo '<p><a href="kelola_jenis_pelanggaran.php">Kelola Jenis Pelanggaran</a></p>';
-        echo '<p><a href="Laporan.php">Laporan</a></p>';
-    }
+        <ul>
+            <?php if($_SESSION['role'] == 'admin'){ ?>
+        <li><a href="kelola_guru.php">kelola guru</a></li>
+        <li><a href="kelola_siswa.php">kelola siswa</a></li>
+        <li><a href="kelola_kelas.php">kelola kelas</a></li>
+        <li><a href="kelola_tahun_ajaran.php">kelola tahun ajaran</a></li>
+        <li><a href="kelola_kategori_pelanggaran">kelola kategori pelanggaran</a></li>
+    <?php } ?>
 
-    // Menu untuk guru
-    if ($role == 'guru') {
-        echo "<h3>Menu Guru</h3>";
-        echo '<p><a href="catat_pelanggaran.php">Catat Pelanggaran</a></p>';
-        echo '<p><a href="tindakan.php">Tindakan</a></p>';
-        echo '<p><a href="riwayat.php">Riwayat</a></p>';
-        echo '<p><a href="rekap_poin.php">Rekap Poin</a></p>';
-    }
-    ?>
-
-    <hr>
-
-    <!-- Tombol logout -->
-    <p><a href="logout.php">Logout</a></p>
-
+        <?php if ($_SESSION['role'] == 'guru'){ ?>
+        <li><a href="menu3.php">menu 3</a></li>
+        <li><a href="menu4.php">menu 4</a></li>
+            <?php } ?>
+</ul>
+        <a href="logout.php">logout</a>
 </body>
 </html>

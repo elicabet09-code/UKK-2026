@@ -1,6 +1,6 @@
 <?php
-//buat_user_awal.php
-//jalankan file ini satu kali saja lewat browseruntuk user awal 
+//buat_user_guru.php
+//jalankan file ini satu kali saja lewat browseruntuk user guru
 include 'config/koneksi.php';
 
 $name ='administrator';

@@ -40,7 +40,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 </li>
                 <li class="nav-item mb-2">
                     <a href="kelola_kelas.php" class="nav-link text-white">
-                        Kelas
+                        Data Kelas
                     </a>
                 </li>
                 <li class="nav-item mb-2">
@@ -134,7 +134,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
             <td>
                 <a href="edit_tahun_ajaran.php?id=<?php echo $row['id']; ?>">
-                     <button type="button" class="btn btn-warning">Edit</button>
+                     <button type="button" class="btn btn-primary">Edit</button>
                 </a>
                 |
                 <a href="hapus_tahun_ajaran.php?id=<?php echo $row['id']; ?>"

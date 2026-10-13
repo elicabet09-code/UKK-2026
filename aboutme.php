@@ -8,7 +8,7 @@ $kelas = "XI RPL";
 $sekolah = "SMK Muhammadiyah Tasikmalaya";
 $jurusan = "Rekayasa Perangkat Lunak";
 $hobi = "Memasak";
-$cita_cita "Gimana Allah Aja";
+$cita_cita = "Sesuai Jalan Yang Allah Kasih Aja";
 ?>
 
 <!DOCTYPE html>
@@ -30,10 +30,10 @@ $cita_cita "Gimana Allah Aja";
 
     <h3>Deskripsi Diri</h3>
     <p>
-        Saya adalah seorang pelajar yang sedang belajar
-        Rekayasa Perangkat Lunak. Saya senang mempelajari
-        teknologi dan membuat website. Saya ingin terus
-        belajar agar bisa menjadi Web Developer.
+        Saya adalah seorang pelajar yang sedang belajar di
+        Jurusan Rekayasa Perangkat Lunak 
+        Saya senang mempelajari teknologi dan membuat website
+        Saya ingin terus belajar agar bisa menjadi Web Developer Aamiin.
     </p>
 
     <a href="dashboard.php">Kembali ke Dashboard</a>

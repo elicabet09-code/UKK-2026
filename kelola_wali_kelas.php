@@ -19,8 +19,6 @@ $hasil = mysqli_query($koneksi, $sql);
 <html>
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Kelola Guru</title>
-    <h1>Kelola Guru</h1>
     <title>Kelola Wali Kelas</title>
 </head>
 <body>
@@ -60,7 +58,7 @@ $hasil = mysqli_query($koneksi, $sql);
         </td>
         <td>
             <a href="edit_wali_kelas.php?id=<?php echo $row['id']; ?>">
-                Edit
+            <button type="button" class="btn btn-primary">Edit</button>
             </a>
             |
             <a href="hapus_wali_kelas.php?id=<?php echo $row['id']; ?>"

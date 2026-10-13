@@ -11,7 +11,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <html>
 
 <head>
-    <title>Kelola Kelas</title>
+    <title>Data Kelas</title>
 </head>
 <div class="container-fluid">
     <div class="row">
@@ -38,7 +38,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 </li>
                 <li class="nav-item mb-2">
                     <a href="kelola_kelas.php" class="nav-link text-white">
-                        Kelas
+                        Data Kelas
                     </a>
                 </li>
                 <li class="nav-item mb-2">
@@ -141,7 +141,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
             <td>
                 <a href="edit_kelas.php?id=<?php echo $row['id']; ?>">
-                    <button type="button" class="btn btn-warning">Edit</button>
+                   <button type="button" class="btn btn-primary">Edit</button>
                 </a>
 
                 |
