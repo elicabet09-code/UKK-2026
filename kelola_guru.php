@@ -1,5 +1,5 @@
 <?php
-// kelola_guru.php
+// kelola_guru.php 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
