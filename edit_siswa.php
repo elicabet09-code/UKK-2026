@@ -5,13 +5,14 @@ include 'config/koneksi.php';
 
 $id = $_GET['id'];
 
-$sql = "SELECT * FROM tbl_guru WHERE id = '$id'";
+$sql = "SELECT * FROM t_siswa WHERE id = '$id'";
 $hasil = mysqli_query($koneksi, $sql);
 $data = mysqli_fetch_assoc($hasil);
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Edit Siswa</title>
 </head>
@@ -22,34 +23,85 @@ $data = mysqli_fetch_assoc($hasil);
 
     <form action="proses_edit_siswa.php" method="POST">
 
-        <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
+        <input type="hidden" name="id"
+               value="<?php echo $data['id']; ?>">
 
         <table>
 
             <tr>
-                <td>NIP</td>
+                <td>NIS</td>
                 <td>:</td>
                 <td>
-                    <input type="text" name="nip"
-                        value="<?php echo $data['nip']; ?>" required>
+                    <input type="text" name="nis"
+                           value="<?php echo $data['nis']; ?>"
+                           required>
                 </td>
             </tr>
 
             <tr>
-                <td>Nama Guru</td>
+                <td>NISN</td>
+                <td>:</td>
+                <td>
+                    <input type="text" name="nisn"
+                           value="<?php echo $data['nisn']; ?>"
+                           required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Nama Siswa</td>
                 <td>:</td>
                 <td>
                     <input type="text" name="nama"
-                        value="<?php echo $data['nama']; ?>" required>
+                           value="<?php echo $data['nama']; ?>"
+                           required>
                 </td>
             </tr>
 
             <tr>
-                <td>Email</td>
+                <td>Jenis Kelamin</td>
                 <td>:</td>
                 <td>
-                    <input type="email" name="email"
-                        value="<?php echo $data['email']; ?>" required>
+                    <select name="jenis_kelamin" required>
+
+                        <option value="L"
+                            <?php
+                            if ($data['jenis_kelamin'] == 'L')
+                                echo 'selected';
+                            ?>>
+                            Laki-laki
+                        </option>
+
+                        <option value="P"
+                            <?php
+                            if ($data['jenis_kelamin'] == 'P')
+                                echo 'selected';
+                            ?>>
+                            Perempuan
+                        </option>
+
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Tanggal Lahir</td>
+                <td>:</td>
+                <td>
+                    <input type="date" name="tanggal_lahir"
+                           value="<?php echo $data['tanggal_lahir']; ?>"
+                           required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Alamat</td>
+                <td>:</td>
+                <td>
+                    <textarea name="alamat"
+                              rows="4"
+                              cols="30"
+                              required><?php echo $data['alamat']; ?></textarea>
                 </td>
             </tr>
 
@@ -60,25 +112,22 @@ $data = mysqli_fetch_assoc($hasil);
                     <select name="status_aktif" required>
 
                         <option value="1"
-                            <?php if ($data['status_aktif'] == 1) echo 'selected'; ?>>
+                            <?php
+                            if ($data['status_aktif'] == 1)
+                                echo 'selected';
+                            ?>>
                             Aktif
                         </option>
 
                         <option value="0"
-                            <?php if ($data['status_aktif'] == 0) echo 'selected'; ?>>
+                            <?php
+                            if ($data['status_aktif'] == 0)
+                                echo 'selected';
+                            ?>>
                             Tidak Aktif
                         </option>
 
                     </select>
-                </td>
-            </tr>
-
-            <tr>
-                <td>User ID</td>
-                <td>:</td>
-                <td>
-                    <input type="number" name="user_id"
-                        value="<?php echo $data['user_id']; ?>">
                 </td>
             </tr>
 
@@ -93,7 +142,7 @@ $data = mysqli_fetch_assoc($hasil);
     </form>
 
     <p>
-        <a href="kelola_guru.php">Kembali ke Kelola Guru</a>
+        <a href="kelola_siswa.php">Kembali ke Kelola Siswa</a>
     </p>
 
 </body>
