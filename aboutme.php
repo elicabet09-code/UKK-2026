@@ -35,7 +35,6 @@ $cita_cita = "Sesuai Jalan Yang Allah Kasih Aja";
         Saya senang mempelajari teknologi dan membuat website
         Saya ingin terus belajar agar bisa menjadi Web Developer Aamiin.
     </p>
-
     <a href="dashboard.php">Kembali ke Dashboard</a>
 
 </body>

@@ -28,7 +28,7 @@ include 'includes/cek_session.php';
             <div class="row">
                 <!-- CARD DATA SISWA -->
                 <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm bg-primary text-white">
                         <div class="card-body">
                             <h5 class="card-title">
                                 Data Siswa
@@ -41,7 +41,7 @@ include 'includes/cek_session.php';
                 </div>
                 <!-- CARD DATA GURU -->
                 <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm bg-danger text-white">
                         <div class="card-body">
                             <h5 class="card-title">
                                 Data Guru
@@ -54,7 +54,7 @@ include 'includes/cek_session.php';
                 </div>
                 <!-- CARD KELAS -->
                 <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm bg-warning text-white">
                         <div class="card-body">
                             <h5 class="card-title">
                                 Kelas

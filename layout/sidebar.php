@@ -48,7 +48,7 @@
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="about_me.php" class="nav-link text-white">
+                    <a href="aboutme.php" class="nav-link text-white">
                      About Me
                     </a>
                 </li>
