@@ -1,23 +1,4 @@
 <?php
-include 'includes/cek_session.php';
-include 'config/koneksi.php';
-
-$sql = "SELECT * FROM t_siswa ORDER BY nama ASC";
-$hasil = mysqli_query($koneksi, $sql);
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <meta charset="UTF-8">
-
-    <title>Kelola Siswa</title>
-</head>
-<body>
-    <div class="container-fluid">
-    <div class="row">
-       <?php
 // kelola_wali_kelas.php
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
@@ -35,125 +16,166 @@ $hasil = mysqli_query($koneksi, $sql);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
+
 <head>
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Kelola Wali Kelas</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- DataTables Bootstrap 5 -->
+    <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
+          rel="stylesheet">
 </head>
+
 <body>
+
 <div class="container-fluid">
     <div class="row">
 
+        <?php include 'layout/sidebar.php'; ?>
+
         <!-- KONTEN -->
         <main class="col-md-9 col-lg-10 p-4">
-            
-            <div class="row"></div>
 
-     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+            <h2>Kelola Wali Kelas</h2>
+            <p>Selamat datang di halaman Wali Kelas.</p>
 
-<h1>Kelola Wali Kelas</h1>
-
-<p>
-    <a href="dashboard.php">Kembali ke Dashboard</a> |
-    <a href="tambah_walikelas.php">Tambah Wali Kelas</a>
-</p>
-
-
-    <table class="table">
-  <thead class="thead-dark">
-    <tr>
-        <th>ID</th>
-        <th>Tahun Ajaran ID</th>
-        <th>Kelas</th>
-        <th>Guru</th>
-        <th>Tanggal Mulai</th>
-        <th>Tanggal Selesai</th>
-        <th>Status</th>
-        <th>Aksi</th>
-    </tr>
-
-    <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
-    <tr>
-        <td><?php echo $row['id']; ?></td>
-        <td><?php echo $row['tahun_ajaran_id']; ?></td>
-        <td><?php echo htmlspecialchars($row['nama_kelas'] ?? '-'); ?></td>
-        <td><?php echo htmlspecialchars($row['nama_guru'] ?? '-'); ?></td>
-        <td><?php echo $row['tanggal_mulai']; ?></td>
-        <td><?php echo $row['tanggal_selesai']; ?></td>
-        <td>
-            <?php echo $row['status_aktif'] == 1
-                ? 'Aktif' : 'Tidak Aktif'; ?>
-        </td>
-     <td>
-                <a href="edit_kelas.php?id=<?php echo $row['id']; ?>">
-                    <button type="button" class="btn btn-warning">Edit</button>
+            <div class="mb-3">
+                <a href="dashboard.php" class="btn btn-secondary">
+                    Kembali ke Dashboard
                 </a>
 
-                |
-
-                <a href="hapus_kelas.php?id=<?php echo $row['id']; ?>"
-                   onclick="return confirm('Yakin ingin menghapus data kelas ini?');">
-                <button type="button" class="btn btn-danger">Hapus</button>
+                <a href="tambah_wali_kelas.php" class="btn btn-primary">
+                    Tambah Wali Kelas
                 </a>
-            </td>
+            </div>
 
-        </tr>
-    <?php } ?>
-</table>
+            <!-- TABEL DATA WALI KELAS -->
+            <div class="table-responsive">
 
-</body>
-</html>
-        <!-- KONTEN -->
-        <main class="col-md-9 col-lg-10 p-4">
- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+                <table id="tabelWaliKelas"
+                       class="table table-striped table-bordered table-hover">
 
-    <h1>Kelola Siswa</h1>
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tahun Ajaran ID</th>
+                            <th>Kelas</th>
+                            <th>Guru</th>
+                            <th>Tanggal Mulai</th>
+                            <th>Tanggal Selesai</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
 
-    <p>
-        <a href="dashboard.php">Kembali ke Dashboard</a> |
-        <a href="tambah_siswa.php">Tambah Siswa</a>
-    </p>
+                    <tbody>
 
-    <table class="table">
-  <thead class="thead-dark">
-        <tr>
-            <th>NIS</th>
-            <th>NISN</th>
-            <th>Nama</th>
-            <th>Jenis Kelamin</th>
-            <th>Tanggal Lahir</th>
-            <th>Alamat</th>
-            <th>Status Aktif</th>
-            <th>Aksi</th>
-        </tr>
+                    <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
 
-        <?php
-        while ($siswa = mysqli_fetch_assoc($hasil)) {
-        ?>
-        <tr>
-            <td><?= $siswa['nis'] ?? '' ?></td>
-            <td><?= $siswa['nisn'] ?? '' ?></td>
-            <td><?= $siswa['nama'] ?? '' ?></td>
-            <td><?= $siswa['jenis_kelamin'] ?? '' ?></td>
-            <td><?= $siswa['tanggal_lahir'] ?? '' ?></td>
-            <td><?= $siswa['alamat'] ?? '' ?></td>
-            <td><?= $siswa['status_aktif'] ?? 'Aktif' ?></td>
-            <td>
-                <a href="edit_siswa.php?nis=<?= $siswa['nis'] ?? '' ?>"></a> 
-                <button type="button" class="btn btn-primary">Edit</button>
+                        <tr>
+                            <td>
+                                <?php echo htmlspecialchars($row['id']); ?>
+                            </td>
 
-                <a href="hapus_siswa.php?nis=<?= $siswa['nis'] ?? '' ?>"></a>
+                            <td>
+                                <?php echo htmlspecialchars($row['tahun_ajaran_id']); ?>
+                            </td>
 
-                <button type="button" class="btn btn-danger">Hapus</button>
-            </td>
-        </tr>
-        <?php } ?>
+                            <td>
+                                <?php echo htmlspecialchars($row['nama_kelas'] ?? '-'); ?>
+                            </td>
 
-    </table>
+                            <td>
+                                <?php echo htmlspecialchars($row['nama_guru'] ?? '-'); ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($row['tanggal_mulai'] ?? ''); ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($row['tanggal_selesai'] ?? ''); ?>
+                            </td>
+
+                            <td>
+                                <?php
+                                echo ($row['status_aktif'] == 1)
+                                    ? 'Aktif'
+                                    : 'Tidak Aktif';
+                                ?>
+                            </td>
+
+                            <td>
+                                <a href="edit_wali_kelas.php?id=<?php echo urlencode($row['id']); ?>"
+                                   class="btn btn-primary btn-sm">
+                                    Edit
+                                </a>
+
+                                <a href="hapus_wali_kelas.php?id=<?php echo urlencode($row['id']); ?>"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Yakin ingin menghapus data wali kelas ini?');">
+                                    Hapus
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php } ?>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- Mengaktifkan DataTables -->
+<script>
+$(document).ready(function () {
+
+    $('#tabelWaliKelas').DataTable({
+
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            infoEmpty: "Tidak ada data wali kelas",
+            zeroRecords: "Data wali kelas tidak ditemukan",
+            emptyTable: "Belum ada data wali kelas",
+
+            paginate: {
+                first: "Pertama",
+                last: "Terakhir",
+                next: "Berikutnya",
+                previous: "Sebelumnya"
+            }
+        },
+
+        pageLength: 10,
+
+        lengthMenu: [5, 10, 25, 50, 100],
+
+        order: [[0, 'desc']]
+    });
+
+});
+</script>
+
 </body>
 </html>
