@@ -9,28 +9,22 @@ if (!isset($_SESSION['login'])) {
 }
 
 if ($_SESSION['role'] != 'admin') {
-    echo "Akses ditolak!";
-    exit;
+    die("Akses ditolak!");
 }
 
 if (!isset($_GET['id'])) {
-    echo "ID tahun ajaran tidak ditemukan!";
-    exit;
+    die("ID tahun ajaran tidak ditemukan!");
 }
 
-$id = $_GET['id'];
+$id = (int) $_GET['id'];
 
-$sql = "DELETE FROM t_tahun_ajaran
-        WHERE id='$id'";
+$sql = "DELETE FROM t_tahun_ajaran WHERE id='$id'";
 
 if (mysqli_query($koneksi, $sql)) {
-
-    header("Location: hapus_tahun_ajaran.php");
+    header("Location: kelola_tahun_ajaran.php");
     exit;
-
 } else {
-
-    echo "Gagal menghapus tahun ajaran: "
+    echo "Gagal menghapus tahun ajaran. Data mungkin masih digunakan di kelas siswa. "
          . mysqli_error($koneksi);
 }
 

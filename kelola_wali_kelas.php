@@ -13,6 +13,10 @@ $sql = "SELECT
         ORDER BY w.id DESC";
 
 $hasil = mysqli_query($koneksi, $sql);
+
+if (!$hasil) {
+    die("Query gagal: " . mysqli_error($koneksi));
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +42,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <div class="container-fluid">
     <div class="row">
 
+        <!-- SIDEBAR -->
         <?php include 'layout/sidebar.php'; ?>
 
         <!-- KONTEN -->
@@ -56,7 +61,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 </a>
             </div>
 
-            <!-- TABEL DATA WALI KELAS -->
+            <!-- TABEL WALI KELAS -->
             <div class="table-responsive">
 
                 <table id="tabelWaliKelas"
@@ -64,7 +69,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Tahun Ajaran ID</th>
                             <th>Kelas</th>
                             <th>Guru</th>
@@ -77,15 +82,18 @@ $hasil = mysqli_query($koneksi, $sql);
 
                     <tbody>
 
-                    <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+                    <?php
+                    $no = 1;
+
+                    while ($row = mysqli_fetch_assoc($hasil)) {
+                    ?>
 
                         <tr>
-                            <td>
-                                <?php echo htmlspecialchars($row['id']); ?>
-                            </td>
+                            <!-- NOMOR URUT OTOMATIS -->
+                            <td><?php echo $no++; ?></td>
 
                             <td>
-                                <?php echo htmlspecialchars($row['tahun_ajaran_id']); ?>
+                                <?php echo htmlspecialchars($row['tahun_ajaran_id'] ?? ''); ?>
                             </td>
 
                             <td>
@@ -113,13 +121,17 @@ $hasil = mysqli_query($koneksi, $sql);
                             </td>
 
                             <td>
-                                <a href="edit_wali_kelas.php?id=<?php echo urlencode($row['id']); ?>"
-                                   class="btn btn-primary btn-sm">
+                                <a href="edit_wali_kelas.php?id=<?php
+                                    echo urlencode($row['id']);
+                                ?>"
+                                   class="btn btn-primary btn-sm mb-1">
                                     Edit
                                 </a>
 
-                                <a href="hapus_wali_kelas.php?id=<?php echo urlencode($row['id']); ?>"
-                                   class="btn btn-danger btn-sm"
+                                <a href="hapus_wali_kelas.php?id=<?php
+                                    echo urlencode($row['id']);
+                                ?>"
+                                   class="btn btn-danger btn-sm mb-1"
                                    onclick="return confirm('Yakin ingin menghapus data wali kelas ini?');">
                                     Hapus
                                 </a>
@@ -141,21 +153,35 @@ $hasil = mysqli_query($koneksi, $sql);
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<!-- Bootstrap 5 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Mengaktifkan DataTables -->
+<!-- Pengaturan DataTables -->
 <script>
 $(document).ready(function () {
 
     $('#tabelWaliKelas').DataTable({
 
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50, 100],
+
+        // Data awal diurutkan berdasarkan ID terbaru
+        order: [[1, 'asc']],
+
+        ordering: true,
+        searching: true,
+        paging: true,
+
         language: {
-            search: "Cari:",
+            search: "Cari wali kelas:",
             lengthMenu: "Tampilkan _MENU_ data",
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
             infoEmpty: "Tidak ada data wali kelas",
+            infoFiltered: "(difilter dari _MAX_ total data)",
             zeroRecords: "Data wali kelas tidak ditemukan",
             emptyTable: "Belum ada data wali kelas",
 
@@ -167,11 +193,27 @@ $(document).ready(function () {
             }
         },
 
-        pageLength: 10,
+        // Kolom nomor dan aksi tidak dapat diurutkan
+        columnDefs: [
+            {
+                targets: [0, 7],
+                orderable: false,
+                searchable: false
+            }
+        ],
 
-        lengthMenu: [5, 10, 25, 50, 100],
+        // Nomor otomatis mengikuti halaman tabel
+        drawCallback: function () {
+            var api = this.api();
+            var info = api.page.info();
 
-        order: [[0, 'desc']]
+            api.column(0, {
+                page: 'current'
+            }).nodes().each(function (cell, i) {
+                cell.innerHTML = info.start + i + 1;
+            });
+        }
+
     });
 
 });

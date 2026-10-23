@@ -5,6 +5,10 @@ include 'config/koneksi.php';
 
 $sql = "SELECT * FROM t_guru ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
+
+if (!$hasil) {
+    die("Query gagal: " . mysqli_error($koneksi));
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +33,7 @@ $hasil = mysqli_query($koneksi, $sql);
 <div class="container-fluid">
     <div class="row">
 
+        <!-- SIDEBAR -->
         <?php include 'layout/sidebar.php'; ?>
 
         <!-- KONTEN -->
@@ -47,13 +52,14 @@ $hasil = mysqli_query($koneksi, $sql);
                 </a>
             </div>
 
+            <!-- TABEL GURU -->
             <div class="table-responsive">
                 <table id="tabelGuru"
                        class="table table-striped table-bordered table-hover">
 
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>NIP</th>
                             <th>Nama Guru</th>
                             <th>Email</th>
@@ -65,23 +71,25 @@ $hasil = mysqli_query($koneksi, $sql);
                     </thead>
 
                     <tbody>
-                        <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+                        <?php
+                        $no = 1;
 
+                        while ($row = mysqli_fetch_assoc($hasil)) {
+                        ?>
                         <tr>
+                            <!-- NOMOR URUT OTOMATIS -->
+                            <td><?php echo $no++; ?></td>
+
                             <td>
-                                <?php echo htmlspecialchars($row['id']); ?>
+                                <?php echo htmlspecialchars($row['nip'] ?? ''); ?>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($row['nip']); ?>
+                                <?php echo htmlspecialchars($row['nama'] ?? ''); ?>
                             </td>
 
                             <td>
-                                <?php echo htmlspecialchars($row['nama']); ?>
-                            </td>
-
-                            <td>
-                                <?php echo htmlspecialchars($row['email']); ?>
+                                <?php echo htmlspecialchars($row['email'] ?? ''); ?>
                             </td>
 
                             <td>
@@ -101,19 +109,21 @@ $hasil = mysqli_query($koneksi, $sql);
                             </td>
 
                             <td>
-                                <a href="edit_guru.php?id=<?php echo urlencode($row['id']); ?>"
-                                   class="btn btn-primary btn-sm">
+                                <a href="edit_guru.php?id=<?php
+                                    echo urlencode($row['id']);
+                                ?>" class="btn btn-primary btn-sm mb-1">
                                     Edit
                                 </a>
 
-                                <a href="hapus_guru.php?id=<?php echo urlencode($row['id']); ?>"
-                                   class="btn btn-danger btn-sm"
+                                <a href="hapus_guru.php?id=<?php
+                                    echo urlencode($row['id']);
+                                ?>"
+                                   class="btn btn-danger btn-sm mb-1"
                                    onclick="return confirm('Yakin ingin menghapus data guru ini?');">
                                     Hapus
                                 </a>
                             </td>
                         </tr>
-
                         <?php } ?>
                     </tbody>
 
@@ -127,27 +137,37 @@ $hasil = mysqli_query($koneksi, $sql);
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<!-- Bootstrap 5 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Inisialisasi DataTables -->
 <script>
 $(document).ready(function () {
+
     $('#tabelGuru').DataTable({
+
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50, 100],
+
+        // Urutkan berdasarkan nama guru
+        order: [[2, 'asc']],
+
         ordering: true,
         searching: true,
         paging: true,
+
         language: {
-            search: "Cari:",
+            search: "Cari guru:",
             lengthMenu: "Tampilkan _MENU_ data",
             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
             infoEmpty: "Tidak ada data guru",
             infoFiltered: "(difilter dari _MAX_ total data)",
             zeroRecords: "Data guru tidak ditemukan",
             emptyTable: "Belum ada data guru",
+
             paginate: {
                 first: "Pertama",
                 last: "Terakhir",
@@ -155,14 +175,30 @@ $(document).ready(function () {
                 previous: "Sebelumnya"
             }
         },
+
         columnDefs: [
             {
+                targets: [0, 7],
                 orderable: false,
-                searchable: false,
-                targets: 7
+                searchable: false
             }
-        ]
+        ],
+
+        // Perbarui nomor secara otomatis
+        // ketika tabel berubah atau berpindah halaman
+        drawCallback: function () {
+            var api = this.api();
+            var info = api.page.info();
+
+            api.column(0, {
+                page: 'current'
+            }).nodes().each(function (cell, i) {
+                cell.innerHTML = info.start + i + 1;
+            });
+        }
+
     });
+
 });
 </script>
 

@@ -5,6 +5,10 @@ include 'config/koneksi.php';
 
 $sql = "SELECT * FROM t_pelanggaran_kategori ORDER BY id DESC";
 $hasil = mysqli_query($koneksi, $sql);
+
+if (!$hasil) {
+    die("Query gagal: " . mysqli_error($koneksi));
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +60,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Nama Kategori</th>
                             <th>Deskripsi</th>
                             <th>Status Aktif</th>
@@ -68,15 +72,17 @@ $hasil = mysqli_query($koneksi, $sql);
 
                     <tbody>
 
-                    <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
+                    <?php
+                    $no = 1;
+
+                    while ($row = mysqli_fetch_assoc($hasil)) {
+                    ?>
 
                         <tr>
-                            <td>
-                                <?php echo htmlspecialchars($row['id']); ?>
-                            </td>
+                            <td><?php echo $no++; ?></td>
 
                             <td>
-                                <?php echo htmlspecialchars($row['nama']); ?>
+                                <?php echo htmlspecialchars($row['nama'] ?? ''); ?>
                             </td>
 
                             <td>
@@ -85,11 +91,9 @@ $hasil = mysqli_query($koneksi, $sql);
 
                             <td>
                                 <?php
-                                if ($row['status_aktif'] == 1) {
-                                    echo "Aktif";
-                                } else {
-                                    echo "Tidak Aktif";
-                                }
+                                echo ($row['status_aktif'] == 1)
+                                    ? 'Aktif'
+                                    : 'Tidak Aktif';
                                 ?>
                             </td>
 
@@ -160,7 +164,30 @@ $(document).ready(function () {
 
         lengthMenu: [5, 10, 25, 50, 100],
 
-        order: [[0, 'desc']]
+        // Nomor urut dan kolom Aksi tidak dapat diurutkan
+        columnDefs: [
+            {
+                targets: [0, 6],
+                orderable: false,
+                searchable: false
+            }
+        ],
+
+        // Mengurutkan berdasarkan ID terbaru melalui hasil query
+        order: [],
+
+        // Nomor otomatis menyesuaikan halaman DataTables
+        drawCallback: function () {
+            var api = this.api();
+            var info = api.page.info();
+
+            api.column(0, {
+                page: 'current'
+            }).nodes().each(function (cell, i) {
+                cell.innerHTML = info.start + i + 1;
+            });
+        }
+
     });
 
 });
