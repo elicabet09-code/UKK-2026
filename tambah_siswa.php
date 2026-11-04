@@ -40,13 +40,14 @@ include 'includes/cek_session.php';
 
                     <form action="proses_tambah_siswa.php"
                           method="POST"
-                          id="form TambahSiswa">
+                          id="formTambahSiswa">
 
                         <div class="mb-3">
                             <label class="form-label">NIS</label>
                             <input type="text"
                                    name="nis"
                                    class="form-control"
+                                    maxlength="10"
                                    required>
                         </div>
 
@@ -55,6 +56,7 @@ include 'includes/cek_session.php';
                             <input type="text"
                                    name="nisn"
                                    class="form-control"
+                                    maxlength="10"
                                    required>
                         </div>
 
@@ -110,28 +112,7 @@ include 'includes/cek_session.php';
                                       class="form-control"
                                       rows="4"
                                       required></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password"
-                                   name="password"
-                                   id="password"
-                                   class="form-control"
-                                   autocomplete="new-password"
-                                   required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Konfirmasi Password</label>
-                            <input type="password"
-                                   name="konfirmasi_password"
-                                   id="konfirmasi_password"
-                                   class="form-control"
-                                   autocomplete="new-password"
-                                   required>
-                        </div>
-
+                       
                         <div class="mb-4">
                             <label class="form-label">Status Aktif</label>
                             <select name="status_aktif"
@@ -147,7 +128,7 @@ include 'includes/cek_session.php';
                         </button>
 
                         <a href="kelola_siswa.php"
-                           class="btn btn-secondary">
+                           class="btn btn-danger">
                             Kembali
                         </a>
 

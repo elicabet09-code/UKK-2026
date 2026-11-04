@@ -160,7 +160,7 @@ if (!$hasil) {
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="edit_jenis_pelanggaran.php?id=<?= (int) $row['id']; ?>"
-                                               class="btn btn-warning btn-sm">
+                                               class="btn btn-primary btn-sm">
                                                 Edit
                                             </a>
 

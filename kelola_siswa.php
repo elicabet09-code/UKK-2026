@@ -3,8 +3,16 @@
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
+// Mengambil data siswa
 $sql = "SELECT * FROM t_siswa ORDER BY nama ASC";
 $hasil = mysqli_query($koneksi, $sql);
+
+if (!$hasil) {
+    die("Query gagal: " . mysqli_error($koneksi));
+}
+
+// Nomor urut dimulai dari 1
+$no = 1;
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +40,6 @@ $hasil = mysqli_query($koneksi, $sql);
 
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN -->
         <main class="col-md-9 col-lg-10 p-4">
 
             <h1 class="mb-4">Kelola Siswa</h1>
@@ -48,7 +55,7 @@ $hasil = mysqli_query($koneksi, $sql);
                 </a>
             </div>
 
-            <!-- TABEL DATA SISWA -->
+            <!-- Tabel Data Siswa -->
             <div class="card shadow-sm">
                 <div class="card-body">
 
@@ -76,9 +83,8 @@ $hasil = mysqli_query($koneksi, $sql);
                             <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
 
                                 <tr>
-                                    <td>
-                                        <?= htmlspecialchars($row['id']) ?>
-                                    </td>
+                                    <!-- Nomor otomatis -->
+                                    <td><?= $no++ ?></td>
 
                                     <td>
                                         <?= htmlspecialchars($row['nis'] ?? '') ?>
@@ -94,9 +100,9 @@ $hasil = mysqli_query($koneksi, $sql);
 
                                     <td>
                                         <?php
-                                        if ($row['jenis_kelamin'] == 'L') {
+                                        if (($row['jenis_kelamin'] ?? '') == 'L') {
                                             echo "Laki-laki";
-                                        } elseif ($row['jenis_kelamin'] == 'P') {
+                                        } elseif (($row['jenis_kelamin'] ?? '') == 'P') {
                                             echo "Perempuan";
                                         } else {
                                             echo "-";
@@ -113,18 +119,14 @@ $hasil = mysqli_query($koneksi, $sql);
                                     </td>
 
                                     <td>
-                                        <?php if ($row['status_aktif'] == 1) { ?>
-
+                                        <?php if (($row['status_aktif'] ?? 0) == 1) { ?>
                                             <span class="badge bg-success">
                                                 Aktif
                                             </span>
-
                                         <?php } else { ?>
-
                                             <span class="badge bg-danger">
                                                 Tidak Aktif
                                             </span>
-
                                         <?php } ?>
                                     </td>
 
@@ -166,11 +168,8 @@ $hasil = mysqli_query($koneksi, $sql);
 
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
-
-<!-- DataTables Bootstrap 5 -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Inisialisasi DataTables -->
 <script>
 $(document).ready(function () {
 
@@ -201,11 +200,21 @@ $(document).ready(function () {
 
         columnDefs: [
             {
-                targets: 8,
+                targets: [0, 8],
                 orderable: false,
                 searchable: false
             }
-        ]
+        ],
+
+        // Nomor otomatis mengikuti urutan dan halaman DataTables
+        drawCallback: function () {
+            var api = this.api();
+            var start = api.page.info().start;
+
+            api.column(0, {page: 'current'}).nodes().each(function (cell, i) {
+                cell.innerHTML = start + i + 1;
+            });
+        }
 
     });
 
