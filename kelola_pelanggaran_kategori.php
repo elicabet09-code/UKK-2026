@@ -48,7 +48,7 @@ if (!$hasil) {
 
                 <a href="tambah_pelanggaran_kategori.php"
                    class="btn btn-primary">
-                    Tambah Kategori Pelanggaran
+                    + Tambah Kategori Pelanggaran
                 </a>
             </div>
 
