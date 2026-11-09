@@ -13,6 +13,8 @@ session_start();
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
         * {
             box-sizing: border-box;
@@ -20,95 +22,169 @@ session_start();
 
         body {
             margin: 0;
-            padding: 0;
             min-height: 100vh;
-            background-color: #9bd5f7;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
 
             display: flex;
             justify-content: center;
             align-items: center;
+
+            background: linear-gradient(
+                135deg,
+                #dff3ff,
+                #a9ddfa,
+                #eaf7ff
+            );
+        }
+
+        .login-container {
+            width: 420px;
+            max-width: 92%;
         }
 
         .login-box {
-            width: 668px;
-            min-height: 470px;
-            background-color: #ffffff;
+            background: #ffffff;
+            padding: 40px 38px;
+            border-radius: 22px;
 
-            border: 2px solid #168be0;
-            border-radius: 17px;
+            border: 1px solid #e4f2fc;
 
-            box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
+            box-shadow:
+                0 15px 45px rgba(56, 142, 190, 0.15);
+        }
 
-            padding: 32px 55px;
+        .login-icon {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #e5f5ff;
+            color: #2999dc;
+
+            border-radius: 22px;
+            font-size: 32px;
         }
 
         .login-box h3 {
             text-align: center;
-            font-size: 23px;
-            color: #000000;
-            margin-bottom: 78px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #263746;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8999a7;
+            font-size: 14px;
+            margin-bottom: 32px;
         }
 
         .form-group {
-            margin-bottom: 19px;
+            margin-bottom: 21px;
         }
 
         .form-group label {
-            font-size: 16px;
-            color: #000000;
-            margin-bottom: 3px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #405364;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            height: 49px;
+            background: #f5faff;
+            border: 1px solid #e1edf5;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .input-group-text {
+            background: transparent;
+            border: none;
+            color: #72acd0;
+            padding-left: 15px;
         }
 
         .form-control {
             height: 47px;
-            background-color: #ededed;
+            background: transparent;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
+            color: #34495e;
         }
 
         .form-control:focus {
-            background-color: #ededed;
-            border: 1px solid #9bd5f7;
+            background: transparent;
             box-shadow: none;
+            border: none;
+        }
+
+        .input-group:focus-within {
+            border-color: #79c4ed;
+            box-shadow: 0 0 0 3px rgba(121, 196, 237, 0.15);
         }
 
         .btn-login {
-            display: block;
-            width: 96px;
-            height: 34px;
+            width: 100%;
+            height: 49px;
 
-            margin: 22px auto 0;
-
-            background-color: #9bd5f7;
-            color: #ffffff;
+            margin-top: 12px;
 
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #55b5eb,
+                #258ed0
+            );
+
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+
+            transition: 0.3s;
         }
 
         .btn-login:hover {
-            background-color: #79c2ee;
-            color: #ffffff;
+            background: linear-gradient(
+                135deg,
+                #329edb,
+                #197ab8
+            );
+
+            transform: translateY(-2px);
+            box-shadow: 0 7px 15px rgba(37, 142, 208, 0.25);
+            color: white;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 12px;
+            color: #a0adb8;
+            margin-top: 27px;
+            margin-bottom: 0;
         }
 
         .pesan-error {
-            font-size: 14px;
-            margin-bottom: 20px;
+            font-size: 13px;
+            border-radius: 9px;
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 480px) {
             .login-box {
-                width: 90%;
-                min-height: auto;
-                padding: 30px 25px 60px;
+                padding: 32px 24px;
             }
 
             .login-box h3 {
-                font-size: 20px;
-                margin-bottom: 50px;
+                font-size: 21px;
             }
         }
     </style>
@@ -116,10 +192,23 @@ session_start();
 
 <body>
 
+<div class="login-container">
+
     <div class="login-box">
 
-        <h3>Login Aplikasi Pelanggaran Siswa</h3>
+        <!-- Ikon Aplikasi -->
+        <div class="login-icon">
+            <i class="fas fa-user-shield"></i>
+        </div>
 
+        <!-- Judul -->
+        <h3>Selamat Datang!</h3>
+
+        <p class="subtitle">
+            Silakan login ke Aplikasi Pelanggaran Siswa
+        </p>
+
+        <!-- Pesan Error -->
         <?php
         if (isset($_SESSION['pesan_error'])) {
             echo '<div class="alert alert-danger pesan-error">'
@@ -130,39 +219,78 @@ session_start();
         }
         ?>
 
+        <!-- Form Login -->
         <form action="proses_login.php" method="POST" autocomplete="off">
 
+            <!-- Email -->
             <div class="form-group">
+
                 <label for="email">Email Address</label>
 
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    class="form-control"
-                    required
-                    autocomplete="off">
+                <div class="input-group">
+
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                    </div>
+
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        class="form-control"
+                        placeholder="Masukkan email Anda"
+                        required
+                        autocomplete="off">
+
+                </div>
+
             </div>
 
+            <!-- Password -->
             <div class="form-group">
+
                 <label for="password">Password</label>
 
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    class="form-control"
-                    required
-                    autocomplete="new-password">
+                <div class="input-group">
+
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </div>
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        class="form-control"
+                        placeholder="Masukkan password"
+                        required
+                        autocomplete="new-password">
+
+                </div>
+
             </div>
 
+            <!-- Tombol Login -->
             <button type="submit" class="btn btn-login">
-                Login
+                Login <i class="fas fa-arrow-right ml-2"></i>
             </button>
 
         </form>
 
+        <!-- Footer -->
+        <p class="footer-text">
+            &copy; 2026 Aplikasi Pelanggaran Siswa
+            <br>
+            Sistem Informasi Sekolah
+        </p>
+
     </div>
+
+</div>
 
 </body>
 </html>

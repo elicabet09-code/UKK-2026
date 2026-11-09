@@ -4,7 +4,7 @@ include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
 $nama = "Alisa Ramadhani";
-$kelas = "XI RPL";
+$kelas = "XII RPL";
 $sekolah = "SMK Muhammadiyah Tasikmalaya";
 $jurusan = "Rekayasa Perangkat Lunak";
 $hobi = "Memasak";
