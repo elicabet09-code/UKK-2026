@@ -190,6 +190,23 @@ session_start();
     </style>
 </head>
 
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    const icon = document.getElementById("iconPassword");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+
 <body>
 
 <div class="login-container">
@@ -247,33 +264,39 @@ session_start();
                 </div>
 
             </div>
+<!-- Password -->
+<div class="form-group">
 
-            <!-- Password -->
-            <div class="form-group">
+    <label for="password">Password</label>
 
-                <label for="password">Password</label>
+    <div class="input-group">
 
-                <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                <i class="fas fa-lock"></i>
+            </span>
+        </div>
 
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="fas fa-lock"></i>
-                        </span>
-                    </div>
+        <input
+            type="password"
+            name="password"
+            id="password"
+            class="form-control"
+            placeholder="Masukkan password"
+            required
+            autocomplete="new-password">
 
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        class="form-control"
-                        placeholder="Masukkan password"
-                        required
-                        autocomplete="new-password">
+        <div class="input-group-append">
+            <span class="input-group-text"
+                  onclick="togglePassword()"
+                  style="cursor: pointer;">
+                <i class="fas fa-eye" id="iconPassword"></i>
+            </span>
+        </div>
 
-                </div>
+    </div>
 
-            </div>
-
+</div>
             <!-- Tombol Login -->
             <button type="submit" class="btn btn-login">
                 Login <i class="fas fa-arrow-right ml-2"></i>

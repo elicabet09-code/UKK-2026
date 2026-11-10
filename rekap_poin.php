@@ -144,29 +144,39 @@ $jumlah_siswa = count($data_rekap);
             background: #f5f6f8;
             font-family: Arial, sans-serif;
             margin: 0;
+            overflow-x: hidden;
         }
 
         /* =====================================
            SIDEBAR TETAP DIAM SAAT DI-SCROLL
         ===================================== */
 
-        /* Hanya baris utama yang memiliki sidebar */
         .layout-row {
             align-items: flex-start;
         }
 
-        /* Sidebar saja yang dibuat sticky */
+        /* SIDEBAR TETAP DI KIRI LAYAR */
         .layout-row > :first-child {
-            position: sticky !important;
+            position: fixed !important;
             top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+
+            width: 16.666667% !important;
+            max-width: 16.666667% !important;
+
             height: 100vh !important;
-            max-height: 100vh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            max-height: 100vh !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+
+            z-index: 1030;
+            flex: none !important;
             align-self: flex-start;
-            flex-shrink: 0;
         }
 
+        /* SCROLLBAR SIDEBAR */
         .layout-row > :first-child::-webkit-scrollbar {
             width: 5px;
         }
@@ -174,6 +184,53 @@ $jumlah_siswa = count($data_rekap);
         .layout-row > :first-child::-webkit-scrollbar-thumb {
             background: #cccccc;
             border-radius: 10px;
+        }
+
+        /* KONTEN UTAMA TIDAK MENUTUPI SIDEBAR */
+        .layout-row > main {
+            margin-left: 16.666667% !important;
+            width: 83.333333% !important;
+            max-width: 83.333333% !important;
+            flex: 0 0 83.333333% !important;
+            min-height: 100vh;
+        }
+
+        /* =====================================
+           TAMPILAN TABLET
+        ===================================== */
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+
+            .layout-row > :first-child {
+                width: 25% !important;
+                max-width: 25% !important;
+            }
+
+            .layout-row > main {
+                margin-left: 25% !important;
+                width: 75% !important;
+                max-width: 75% !important;
+                flex: 0 0 75% !important;
+            }
+        }
+
+        /* =====================================
+           TAMPILAN HP
+        ===================================== */
+
+        @media (max-width: 767.98px) {
+
+            .layout-row > :first-child {
+                width: 220px !important;
+                max-width: 220px !important;
+            }
+
+            .layout-row > main {
+                margin-left: 220px !important;
+                width: calc(100% - 220px) !important;
+                max-width: calc(100% - 220px) !important;
+                flex: 0 0 calc(100% - 220px) !important;
+            }
         }
 
         /* =====================================
@@ -245,6 +302,8 @@ $jumlah_siswa = count($data_rekap);
 
             main {
                 width: 100% !important;
+                margin-left: 0 !important;
+                max-width: 100% !important;
             }
 
             .card {
