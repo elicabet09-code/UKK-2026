@@ -1,4 +1,3 @@
-
 <?php
 // penempatan_siswa.php
 
@@ -83,6 +82,29 @@ $hasil = mysqli_query($koneksi, $sql);
     <!-- DataTables Bootstrap 5 -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
           rel="stylesheet">
+
+    <style>
+        /* Sidebar tetap diam ketika halaman di-scroll */
+        .sidebar,
+        .container-fluid > .row > .col-md-3:first-child {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            align-self: flex-start;
+        }
+
+        /* Mengatur posisi sidebar dan konten */
+        .container-fluid > .row {
+            align-items: flex-start;
+        }
+
+        /* Konten utama */
+        main {
+            min-height: 100vh;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -338,6 +360,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                 <?php while ($row = mysqli_fetch_assoc($hasil)) { ?>
 
                                     <tr>
+
                                         <td></td>
 
                                         <td>
@@ -373,6 +396,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                         </td>
 
                                         <td>
+
                                             <?php if ($row['status_aktif'] == 1) { ?>
 
                                                 <span class="badge bg-success">
@@ -386,7 +410,9 @@ $hasil = mysqli_query($koneksi, $sql);
                                                 </span>
 
                                             <?php } ?>
+
                                         </td>
+
                                     </tr>
 
                                 <?php } ?>
@@ -401,6 +427,7 @@ $hasil = mysqli_query($koneksi, $sql);
             </div>
 
         </main>
+
     </div>
 </div>
 
@@ -418,6 +445,7 @@ $hasil = mysqli_query($koneksi, $sql);
 
 <!-- Inisialisasi DataTables -->
 <script>
+
 $(document).ready(function () {
 
     $('#tabelPenempatan').DataTable({
@@ -454,16 +482,19 @@ $(document).ready(function () {
         ],
 
         drawCallback: function () {
+
             var api = this.api();
 
             api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
                 cell.innerHTML = i + 1 + api.page.info().start;
             });
+
         }
 
     });
 
 });
+
 </script>
 
 </body>

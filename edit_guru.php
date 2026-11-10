@@ -153,13 +153,6 @@ if (!$data) {
 
                             </select>
                         </div>
-
-                        <!-- User ID -->
-                        <div class="mb-3">
-                            <label for="user_id" class="form-label">
-                                User ID
-                            </label>
-
                             <input type="number"
                                    class="form-control"
                                    id="user_id"
