@@ -49,6 +49,19 @@ if (!$hasil) {
         .table td {
             vertical-align: middle;
         }
+
+        /* SIDEBAR TETAP DIAM SAAT SCROLL */
+        @media (min-width: 768px) {
+
+            .container-fluid > .row > :first-child {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
+                align-self: flex-start;
+            }
+
+        }
     </style>
 
 </head>
@@ -67,6 +80,46 @@ if (!$hasil) {
 
             <!-- JUDUL HALAMAN -->
             <h1 class="mb-3">Kelola Guru</h1>
+
+            <!-- NOTIFIKASI SUKSES -->
+            <?php if (isset($_SESSION['pesan_sukses'])) { ?>
+
+                <div class="alert alert-success alert-dismissible fade show"
+                     role="alert">
+
+                    <?= htmlspecialchars($_SESSION['pesan_sukses']); ?>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <?php unset($_SESSION['pesan_sukses']); ?>
+
+            <?php } ?>
+
+            <!-- NOTIFIKASI ERROR -->
+            <?php if (isset($_SESSION['pesan_error'])) { ?>
+
+                <div class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+
+                    <?= htmlspecialchars($_SESSION['pesan_error']); ?>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <?php unset($_SESSION['pesan_error']); ?>
+
+            <?php } ?>
 
             <!-- TOMBOL NAVIGASI -->
             <div class="mb-3">
@@ -202,16 +255,17 @@ if (!$hasil) {
 
 </div>
 
-
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 
 <!-- DataTables Bootstrap 5 -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
-
 
 <!-- INISIALISASI DATATABLES -->
 <script>
@@ -279,6 +333,17 @@ $(document).ready(function () {
     });
 
 });
+
+// NOTIFIKASI HILANG OTOMATIS SETELAH 5 DETIK
+setTimeout(function () {
+
+    document.querySelectorAll('.alert').forEach(function (alert) {
+
+        bootstrap.Alert.getOrCreateInstance(alert).close();
+
+    });
+
+}, 5000);
 
 </script>
 
