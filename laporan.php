@@ -1,61 +1,113 @@
+
 <?php
-// laporan.php
+// ==========================================
+// LAPORAN.PHP
+// ==========================================
 
 include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
-// Ambil data session
-$role = $_SESSION['role'] ?? '';
-$id_user = (int) ($_SESSION['id_user'] ?? 0);
+// ==========================================
+// 1. SESSION DAN ROLE
+// ==========================================
 
-// Cek hak akses
-if ($role !== 'admin' && $role !== 'guru') {
-    http_response_code(403);
-    exit('Akses ditolak. Halaman ini hanya dapat diakses oleh Admin dan Guru Wali Kelas.');
+$role = strtolower(trim($_SESSION['role'] ?? ''));
+
+$id_user = (int) (
+    $_SESSION['id_user'] ??
+    $_SESSION['id'] ??
+    0
+);
+
+// Normalisasi nama role
+if (in_array($role, ['wali kelas', 'walikelas'], true)) {
+    $role = 'wali_kelas';
 }
 
-// Jika login sebagai guru, cek apakah guru tersebut merupakan wali kelas aktif
+if ($id_user <= 0) {
+    http_response_code(403);
+    exit('ID pengguna tidak ditemukan. Silakan login kembali.');
+}
+
+// ==========================================
+// 2. IDENTIFIKASI WALI KELAS
+// ==========================================
+
 $id_guru = 0;
+$is_wali_kelas = false;
 
-if ($role === 'guru') {
+if ($role === 'guru' || $role === 'wali_kelas') {
 
-    $stmt_guru = mysqli_prepare(
-        $koneksi,
-        "SELECT g.id
-         FROM t_guru g
-         INNER JOIN t_wali_kelas wk ON wk.guru_id = g.id
-         WHERE g.user_id = ?
-           AND wk.status_aktif = 1
-         LIMIT 1"
-    );
+    $query_guru = "
+        SELECT g.id
+        FROM t_guru g
+        INNER JOIN t_wali_kelas wk
+            ON wk.guru_id = g.id
+        WHERE g.user_id = ?
+          AND wk.status_aktif = 1
+        LIMIT 1
+    ";
+
+    $stmt_guru = mysqli_prepare($koneksi, $query_guru);
+
+    if (!$stmt_guru) {
+        die('Gagal menyiapkan data guru: ' .
+            htmlspecialchars(mysqli_error($koneksi)));
+    }
 
     mysqli_stmt_bind_param($stmt_guru, "i", $id_user);
     mysqli_stmt_execute($stmt_guru);
+    mysqli_stmt_bind_result($stmt_guru, $hasil_id_guru);
 
-    $hasil_guru = mysqli_stmt_get_result($stmt_guru);
-    $data_guru = mysqli_fetch_assoc($hasil_guru);
-
-    mysqli_stmt_close($stmt_guru);
-
-    if (!$data_guru) {
-        http_response_code(403);
-        exit('Akses ditolak. Anda bukan Guru Wali Kelas yang aktif.');
+    if (mysqli_stmt_fetch($stmt_guru)) {
+        $id_guru = (int) $hasil_id_guru;
+        $is_wali_kelas = true;
     }
 
-    $id_guru = (int) $data_guru['id'];
+    mysqli_stmt_close($stmt_guru);
 }
 
-// Filter tanggal
-$tanggal_mulai = $_GET['tanggal_mulai'] ?? '';
-$tanggal_selesai = $_GET['tanggal_selesai'] ?? '';
+// ==========================================
+// 3. HAK AKSES
+// ==========================================
 
-// Validasi format tanggal
+// Admin boleh melihat semua laporan.
+// Guru yang terdaftar sebagai wali kelas boleh melihat
+// laporan kelas tanggung jawabnya.
+// Guru biasa tidak boleh membuka laporan wali kelas.
+
+if ($role !== 'admin' && !$is_wali_kelas) {
+
+    http_response_code(403);
+
+    exit(
+        'Akses ditolak. Akun Anda belum terdaftar sebagai Wali Kelas aktif. ' .
+        'Silakan periksa data penugasan Wali Kelas.'
+    );
+}
+
+// ==========================================
+// 4. FILTER TANGGAL
+// ==========================================
+
+$tanggal_mulai = trim($_GET['tanggal_mulai'] ?? '');
+$tanggal_selesai = trim($_GET['tanggal_selesai'] ?? '');
+
+function validasiTanggalLaporan($tanggal)
+{
+    if ($tanggal === '') {
+        return true;
+    }
+
+    $date = DateTime::createFromFormat('!Y-m-d', $tanggal);
+
+    return $date !== false &&
+           $date->format('Y-m-d') === $tanggal;
+}
+
 if (
-    ($tanggal_mulai !== '' &&
-        !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal_mulai)) ||
-
-    ($tanggal_selesai !== '' &&
-        !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal_selesai))
+    !validasiTanggalLaporan($tanggal_mulai) ||
+    !validasiTanggalLaporan($tanggal_selesai)
 ) {
     exit('Format tanggal tidak valid.');
 }
@@ -68,103 +120,151 @@ if (
     exit('Tanggal mulai tidak boleh melebihi tanggal selesai.');
 }
 
-// Query laporan
-$sql = "SELECT
-            ps.id,
-            ps.tahun_ajaran_id,
-            ps.siswa_id,
-            ps.nama_siswa,
-            ps.kelas_id,
-            ps.nama_kelas,
-            ps.pelanggaran_id,
-            ps.nama_pelanggaran,
-            ps.pelanggaran_kategori_id,
-            ps.guru_id,
-            ps.nama_guru,
-            ps.tanggal,
-            ps.keterangan,
-            ps.poin,
-            ps.tindakan,
-            ps.status
-        FROM t_pelanggaran_siswa ps
-        WHERE 1 = 1";
+// ==========================================
+// 5. QUERY LAPORAN
+// ==========================================
 
-$types = "";
+$sql = "
+    SELECT
+        ps.id,
+        ps.tahun_ajaran_id,
+        ps.siswa_id,
+        ps.nama_siswa,
+        ps.kelas_id,
+        ps.nama_kelas,
+        ps.pelanggaran_id,
+        ps.nama_pelanggaran,
+        ps.guru_id,
+        ps.nama_guru,
+        ps.tanggal,
+        ps.keterangan,
+        ps.poin,
+        ps.tindakan,
+        ps.status
+    FROM t_pelanggaran_siswa ps
+    WHERE 1 = 1
+";
+
+$types = '';
 $params = [];
 
-// Guru hanya melihat pelanggaran dari kelas yang menjadi tanggung jawabnya
-if ($role === 'guru') {
+// ==========================================
+// 6. FILTER KHUSUS WALI KELAS
+// ==========================================
 
-    $sql .= " AND EXISTS (
-                SELECT 1
-                FROM t_wali_kelas wk
-                WHERE wk.guru_id = ?
-                  AND wk.kelas_id = ps.kelas_id
-                  AND wk.tahun_ajaran_id = ps.tahun_ajaran_id
-                  AND wk.status_aktif = 1
-            )";
+if ($is_wali_kelas) {
 
-    $types .= "i";
+    $sql .= "
+        AND EXISTS (
+            SELECT 1
+            FROM t_wali_kelas wk
+            WHERE wk.guru_id = ?
+              AND wk.kelas_id = ps.kelas_id
+              AND wk.tahun_ajaran_id = ps.tahun_ajaran_id
+              AND wk.status_aktif = 1
+        )
+    ";
+
+    $types .= 'i';
     $params[] = $id_guru;
 }
 
-// Filter tanggal mulai
+// ==========================================
+// 7. FILTER TANGGAL MULAI
+// ==========================================
+
 if ($tanggal_mulai !== '') {
-    $sql .= " AND ps.tanggal >= ?";
-    $types .= "s";
+
+    $sql .= " AND ps.tanggal >= ? ";
+
+    $types .= 's';
     $params[] = $tanggal_mulai;
 }
 
-// Filter tanggal selesai
+// ==========================================
+// 8. FILTER TANGGAL SELESAI
+// ==========================================
+
 if ($tanggal_selesai !== '') {
-    $sql .= " AND ps.tanggal <= ?";
-    $types .= "s";
+
+    $sql .= " AND ps.tanggal <= ? ";
+
+    $types .= 's';
     $params[] = $tanggal_selesai;
 }
 
+// Urutkan dari tanggal terbaru
 $sql .= " ORDER BY ps.tanggal DESC, ps.id DESC";
+
+// ==========================================
+// 9. EKSEKUSI QUERY
+// ==========================================
 
 $stmt = mysqli_prepare($koneksi, $sql);
 
 if (!$stmt) {
-    die("Gagal menyiapkan laporan: " . htmlspecialchars(mysqli_error($koneksi)));
+    die('Gagal menyiapkan laporan: ' .
+        htmlspecialchars(mysqli_error($koneksi)));
 }
 
-// Bind parameter jika tersedia
+// Bind parameter
 if (!empty($params)) {
+
     $bind_params = [$stmt, $types];
 
     foreach ($params as $key => $value) {
         $bind_params[] = &$params[$key];
     }
 
-    call_user_func_array('mysqli_stmt_bind_param', $bind_params);
+    if (!call_user_func_array(
+        'mysqli_stmt_bind_param',
+        $bind_params
+    )) {
+        die('Gagal menghubungkan parameter laporan.');
+    }
 }
 
-mysqli_stmt_execute($stmt);
+// Eksekusi
+if (!mysqli_stmt_execute($stmt)) {
+    die('Gagal mengambil laporan: ' .
+        htmlspecialchars(mysqli_stmt_error($stmt)));
+}
+
 $hasil = mysqli_stmt_get_result($stmt);
+
+if (!$hasil) {
+    die('Gagal membaca laporan: ' .
+        htmlspecialchars(mysqli_stmt_error($stmt)));
+}
+
+$jumlah = mysqli_num_rows($hasil);
+
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Laporan Pelanggaran Siswa</title>
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    <!-- BOOTSTRAP -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-    <!-- DataTables Bootstrap 5 -->
-    <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
+    <!-- DATATABLES -->
+    <link
+        href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
         rel="stylesheet">
 
     <style>
 
-        /* SIDEBAR TETAP DIAM SAAT SCROLL */
         @media (min-width: 768px) {
 
             .container-fluid > .row > :first-child {
@@ -177,13 +277,22 @@ $hasil = mysqli_stmt_get_result($stmt);
 
         }
 
+        .card-header {
+            font-weight: 600;
+        }
+
+        .table th {
+            white-space: nowrap;
+        }
+
         @media print {
 
             .no-print,
             .sidebar,
             #tabelLaporan_wrapper .dt-search,
             #tabelLaporan_wrapper .dt-length,
-            #tabelLaporan_wrapper .dt-paging {
+            #tabelLaporan_wrapper .dt-paging,
+            #tabelLaporan_wrapper .dt-info {
                 display: none !important;
             }
 
@@ -213,18 +322,21 @@ $hasil = mysqli_stmt_get_result($stmt);
 
     <div class="row">
 
+        <!-- SIDEBAR -->
         <?php include 'layout/sidebar.php'; ?>
 
-        <!-- KONTEN -->
+        <!-- KONTEN UTAMA -->
         <main class="col-md-9 col-lg-10 p-4">
 
-            <h1 class="mb-3">Laporan Pelanggaran Siswa</h1>
+            <h1 class="mb-3">
+                Laporan Pelanggaran Siswa
+            </h1>
 
             <p class="text-muted">
                 Halaman laporan data pelanggaran siswa.
             </p>
 
-            <!-- INFORMASI AKSES -->
+            <!-- INFORMASI ROLE -->
             <div class="alert alert-info no-print">
 
                 <?php if ($role === 'admin') { ?>
@@ -234,14 +346,15 @@ $hasil = mysqli_stmt_get_result($stmt);
 
                 <?php } else { ?>
 
-                    Anda login sebagai <strong>Guru Wali Kelas</strong>.
-                    Anda hanya dapat melihat laporan dari kelas yang menjadi tanggung jawab Anda.
+                    Anda login sebagai <strong>Wali Kelas</strong>.
+                    Anda hanya dapat melihat laporan dari kelas
+                    yang menjadi tanggung jawab Anda.
 
                 <?php } ?>
 
             </div>
 
-            <!-- FILTER TANGGAL -->
+            <!-- FILTER LAPORAN -->
             <div class="card shadow-sm mb-4 no-print">
 
                 <div class="card-header bg-primary text-white">
@@ -260,7 +373,8 @@ $hasil = mysqli_stmt_get_result($stmt);
                                     Tanggal Mulai
                                 </label>
 
-                                <input type="date"
+                                <input
+                                    type="date"
                                     name="tanggal_mulai"
                                     class="form-control"
                                     value="<?= htmlspecialchars($tanggal_mulai); ?>">
@@ -273,7 +387,8 @@ $hasil = mysqli_stmt_get_result($stmt);
                                     Tanggal Selesai
                                 </label>
 
-                                <input type="date"
+                                <input
+                                    type="date"
                                     name="tanggal_selesai"
                                     class="form-control"
                                     value="<?= htmlspecialchars($tanggal_selesai); ?>">
@@ -282,11 +397,15 @@ $hasil = mysqli_stmt_get_result($stmt);
 
                             <div class="col-md-4 mb-3 d-flex align-items-end gap-2">
 
-                                <button type="submit" class="btn btn-primary">
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary">
                                     Tampilkan
                                 </button>
 
-                                <a href="laporan.php" class="btn btn-secondary">
+                                <a
+                                    href="laporan.php"
+                                    class="btn btn-secondary">
                                     Reset
                                 </a>
 
@@ -307,7 +426,8 @@ $hasil = mysqli_stmt_get_result($stmt);
 
                     <span>Data Laporan Pelanggaran</span>
 
-                    <button type="button"
+                    <button
+                        type="button"
                         onclick="window.print()"
                         class="btn btn-light btn-sm no-print">
 
@@ -319,9 +439,17 @@ $hasil = mysqli_stmt_get_result($stmt);
 
                 <div class="card-body">
 
+                    <div class="mb-3">
+
+                        <strong>Jumlah Data:</strong>
+                        <?= $jumlah; ?> laporan
+
+                    </div>
+
                     <div class="table-responsive">
 
-                        <table id="tabelLaporan"
+                        <table
+                            id="tabelLaporan"
                             class="table table-striped table-bordered table-hover align-middle w-100">
 
                             <thead class="table-dark">
@@ -369,7 +497,7 @@ $hasil = mysqli_stmt_get_result($stmt);
                                         </td>
 
                                         <td>
-                                            <?= (int) $row['poin']; ?>
+                                            <?= (int) ($row['poin'] ?? 0); ?>
                                         </td>
 
                                         <td>
@@ -394,10 +522,14 @@ $hasil = mysqli_stmt_get_result($stmt);
 
             </div>
 
+            <!-- KEMBALI -->
             <div class="mt-3 no-print">
 
-                <a href="dashboard.php" class="btn btn-secondary">
+                <a href="dashboard.php"
+                   class="btn btn-secondary">
+
                     Kembali ke Dashboard
+
                 </a>
 
             </div>
@@ -408,16 +540,15 @@ $hasil = mysqli_stmt_get_result($stmt);
 
 </div>
 
-<!-- jQuery -->
+<!-- JAVASCRIPT -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- DataTables -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 
-<!-- DataTables Bootstrap 5 -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- Inisialisasi DataTables -->
 <script>
 
 $(document).ready(function () {
@@ -470,16 +601,14 @@ $(document).ready(function () {
 
         ],
 
-        // Nomor urut otomatis
         drawCallback: function () {
 
             var api = this.api();
+
             var info = api.page.info();
 
             api.column(0, {
-
                 page: 'current'
-
             }).nodes().each(function (cell, i) {
 
                 cell.innerHTML = info.start + i + 1;

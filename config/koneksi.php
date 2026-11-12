@@ -5,7 +5,6 @@ $host = 'localhost';
 $user = 'root';
 $password = '';
 $database = 'db_UKK_2026';
-
 $koneksi = mysqli_connect($host, $user, $password, $database);
 
 if (!$koneksi) {

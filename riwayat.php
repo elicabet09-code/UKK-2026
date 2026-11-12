@@ -38,10 +38,11 @@ if ($cari != '') {
     )";
 }
 
-// 5. FILTER STATUS
-if ($status != '') {
-    $sql .= " AND ps.status = '$status'";
-}
+// 5. MENYEMBUNYIKAN HANYA STATUS SELESAI
+$sql .= " AND (
+    ps.status IS NULL
+    OR TRIM(LOWER(ps.status)) <> 'selesai'
+)";
 
 // 6. URUTKAN DATA TERBARU
 $sql .= " ORDER BY ps.tanggal DESC, ps.id DESC";
@@ -292,6 +293,10 @@ $jumlah = mysqli_num_rows($query);
                                                 $status_data == 'belum ditindak'
                                             ) {
                                                 echo '<span class="badge bg-danger">Belum Ditindak</span>';
+                                            } elseif (
+                                                $status_data == 'ditindaklanjuti'
+                                            ) {
+                                                echo '<span class="badge bg-secondary">Ditindaklanjuti</span>';
                                             } else {
                                                 echo '<span class="badge bg-secondary">'
                                                     . htmlspecialchars($data['status'] ?? '-')
