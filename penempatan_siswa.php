@@ -1,3 +1,4 @@
+
 <?php
 // penempatan_siswa.php
 
@@ -84,14 +85,67 @@ $hasil = mysqli_query($koneksi, $sql);
           rel="stylesheet">
 
     <style>
-        /* Sidebar tetap diam ketika halaman di-scroll */
-        .sidebar,
-        .container-fluid > .row > .col-md-3:first-child {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            align-self: flex-start;
+
+        /* =========================================
+           SIDEBAR TETAP DIAM DAN TANPA SCROLLBAR
+        ========================================= */
+
+        @media (min-width: 768px) {
+
+            .container-fluid > .row > :first-child {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                height: 100vh;
+                width: 25%;
+                overflow-y: auto;
+                overflow-x: hidden;
+                align-self: flex-start;
+                z-index: 1000;
+
+                /* Sembunyikan scrollbar */
+                scrollbar-width: none !important;
+                -ms-overflow-style: none !important;
+            }
+
+            /* Sembunyikan scrollbar Chrome dan browser lain */
+            .container-fluid > .row > :first-child::-webkit-scrollbar,
+            .container-fluid > .row > :first-child *::-webkit-scrollbar {
+                display: none !important;
+                width: 0 !important;
+                height: 0 !important;
+            }
+
+            /* Sembunyikan scrollbar elemen dalam sidebar */
+            .container-fluid > .row > :first-child,
+            .container-fluid > .row > :first-child * {
+                scrollbar-width: none !important;
+                -ms-overflow-style: none !important;
+            }
+
+            /* POSISI KONTEN UTAMA */
+            .container-fluid > .row > main {
+                margin-left: 25%;
+                width: 75%;
+                flex: 0 0 75%;
+            }
+
+        }
+
+        /* PENYESUAIAN UNTUK LAYAR LAPTOP */
+        @media (min-width: 992px) {
+
+            .container-fluid > .row > :first-child {
+                width: 16.666667%;
+            }
+
+            .container-fluid > .row > main {
+                margin-left: 16.666667%;
+                width: 83.333333%;
+                flex: 0 0 83.333333%;
+            }
+
         }
 
         /* Mengatur posisi sidebar dan konten */
@@ -103,6 +157,7 @@ $hasil = mysqli_query($koneksi, $sql);
         main {
             min-height: 100vh;
         }
+
     </style>
 
 </head>

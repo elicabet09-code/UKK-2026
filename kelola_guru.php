@@ -50,17 +50,15 @@ if (!$hasil) {
             vertical-align: middle;
         }
 
-        /* SIDEBAR TETAP DIAM SAAT SCROLL */
+        /* SIDEBAR TETAP DIAM SAAT SCROLL TANPA SCROLLBAR SENDIRI */
         @media (min-width: 768px) {
-
             .container-fluid > .row > :first-child {
                 position: sticky;
                 top: 0;
                 height: 100vh;
-                overflow-y: auto;
+                overflow: visible;
                 align-self: flex-start;
             }
-
         }
     </style>
 
