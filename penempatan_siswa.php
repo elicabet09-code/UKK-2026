@@ -6,7 +6,6 @@ include 'includes/cek_session.php';
 include 'config/koneksi.php';
 
 // Ambil siswa aktif yang BELUM ditempatkan
-// pada tahun ajaran yang sedang aktif
 $siswa = mysqli_query(
     $koneksi,
     "SELECT s.id, s.nis, s.nama
@@ -85,7 +84,6 @@ $hasil = mysqli_query($koneksi, $sql);
           rel="stylesheet">
 
     <style>
-
         /* =========================================
            SIDEBAR TETAP DIAM DAN TANPA SCROLLBAR
         ========================================= */
@@ -104,12 +102,10 @@ $hasil = mysqli_query($koneksi, $sql);
                 align-self: flex-start;
                 z-index: 1000;
 
-                /* Sembunyikan scrollbar */
                 scrollbar-width: none !important;
                 -ms-overflow-style: none !important;
             }
 
-            /* Sembunyikan scrollbar Chrome dan browser lain */
             .container-fluid > .row > :first-child::-webkit-scrollbar,
             .container-fluid > .row > :first-child *::-webkit-scrollbar {
                 display: none !important;
@@ -117,7 +113,6 @@ $hasil = mysqli_query($koneksi, $sql);
                 height: 0 !important;
             }
 
-            /* Sembunyikan scrollbar elemen dalam sidebar */
             .container-fluid > .row > :first-child,
             .container-fluid > .row > :first-child * {
                 scrollbar-width: none !important;
@@ -130,7 +125,6 @@ $hasil = mysqli_query($koneksi, $sql);
                 width: 75%;
                 flex: 0 0 75%;
             }
-
         }
 
         /* PENYESUAIAN UNTUK LAYAR LAPTOP */
@@ -145,19 +139,15 @@ $hasil = mysqli_query($koneksi, $sql);
                 width: 83.333333%;
                 flex: 0 0 83.333333%;
             }
-
         }
 
-        /* Mengatur posisi sidebar dan konten */
         .container-fluid > .row {
             align-items: flex-start;
         }
 
-        /* Konten utama */
         main {
             min-height: 100vh;
         }
-
     </style>
 
 </head>
@@ -407,6 +397,7 @@ $hasil = mysqli_query($koneksi, $sql);
                                     <th>Tanggal Mulai</th>
                                     <th>Tanggal Selesai</th>
                                     <th>Status</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
 
@@ -450,8 +441,8 @@ $hasil = mysqli_query($koneksi, $sql);
                                             <?= htmlspecialchars($row['tanggal_selesai'] ?? '-') ?>
                                         </td>
 
+                                        <!-- STATUS -->
                                         <td>
-
                                             <?php if ($row['status_aktif'] == 1) { ?>
 
                                                 <span class="badge bg-success">
@@ -465,6 +456,21 @@ $hasil = mysqli_query($koneksi, $sql);
                                                 </span>
 
                                             <?php } ?>
+                                        </td>
+
+                                        <!-- AKSI -->
+                                        <td class="text-center text-nowrap">
+
+                                            <a href="edit_penempatan.php?id=<?= (int)$row['id'] ?>"
+                                               class="btn btn-primary btn-sm">
+                                                Edit
+                                            </a>
+
+                                            <a href="proses_hapus_penempatan.php?id=<?= (int)$row['id'] ?>"
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Yakin ingin menghapus data penempatan siswa ini?')">
+                                                Hapus
+                                            </a>
 
                                         </td>
 
@@ -500,7 +506,6 @@ $hasil = mysqli_query($koneksi, $sql);
 
 <!-- Inisialisasi DataTables -->
 <script>
-
 $(document).ready(function () {
 
     $('#tabelPenempatan').DataTable({
@@ -530,7 +535,7 @@ $(document).ready(function () {
 
         columnDefs: [
             {
-                targets: 0,
+                targets: [0, 10],
                 orderable: false,
                 searchable: false
             }
@@ -549,7 +554,6 @@ $(document).ready(function () {
     });
 
 });
-
 </script>
 
 </body>

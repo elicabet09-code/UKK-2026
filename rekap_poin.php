@@ -117,7 +117,6 @@ while ($data = mysqli_fetch_assoc($query_rekap)) {
     $total_catatan += (int) $data['jumlah_pelanggaran'];
 }
 
-// PERHITUNGAN JUMLAH SISWA TETAP
 $jumlah_siswa = count($data_rekap);
 ?>
 
@@ -130,164 +129,50 @@ $jumlah_siswa = count($data_rekap);
 
     <title>Rekap Poin Pelanggaran Siswa</title>
 
-    <!-- BOOTSTRAP -->
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
-    <!-- DATATABLES -->
+    <!-- DataTables Bootstrap 5 -->
     <link href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
           rel="stylesheet">
 
     <style>
-
-        body {
-            background: #f5f6f8;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        /* =====================================
-           SIDEBAR TETAP DIAM SAAT DI-SCROLL
-        ===================================== */
-
-        .layout-row {
-            align-items: flex-start;
-        }
-
-        /* SIDEBAR TETAP DI KIRI LAYAR */
-        .layout-row > :first-child {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            bottom: 0 !important;
-
-            width: 16.666667% !important;
-            max-width: 16.666667% !important;
-
-            height: 100vh !important;
-            max-height: 100vh !important;
-
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-
-            z-index: 1030;
-            flex: none !important;
-            align-self: flex-start;
-        }
-
-        /* SCROLLBAR SIDEBAR */
-        .layout-row > :first-child::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .layout-row > :first-child::-webkit-scrollbar-thumb {
-            background: #cccccc;
-            border-radius: 10px;
-        }
-
-        /* KONTEN UTAMA TIDAK MENUTUPI SIDEBAR */
-        .layout-row > main {
-            margin-left: 16.666667% !important;
-            width: 83.333333% !important;
-            max-width: 83.333333% !important;
-            flex: 0 0 83.333333% !important;
-            min-height: 100vh;
-        }
-
-        /* =====================================
-           TAMPILAN TABLET
-        ===================================== */
-
-        @media (min-width: 768px) and (max-width: 991.98px) {
-
-            .layout-row > :first-child {
-                width: 25% !important;
-                max-width: 25% !important;
-            }
-
-            .layout-row > main {
-                margin-left: 25% !important;
-                width: 75% !important;
-                max-width: 75% !important;
-                flex: 0 0 75% !important;
-            }
-        }
-
-        /* =====================================
-           TAMPILAN HP
-        ===================================== */
-
-        @media (max-width: 767.98px) {
-
-            .layout-row > :first-child {
-                width: 220px !important;
-                max-width: 220px !important;
-            }
-
-            .layout-row > main {
-                margin-left: 220px !important;
-                width: calc(100% - 220px) !important;
-                max-width: calc(100% - 220px) !important;
-                flex: 0 0 calc(100% - 220px) !important;
-            }
-        }
-
-        /* =====================================
-           KONTEN UTAMA
-        ===================================== */
-
-        main {
-            min-height: 100vh;
-        }
-
-        .judul-halaman {
-            font-size: 20px;
-            font-weight: 600;
-            color: #212529;
-        }
-
-        .deskripsi {
-            font-size: 12px;
-            color: #777;
-        }
-
-        /* =====================================
-           KARTU RINGKASAN
-        ===================================== */
-
-        .card-ringkasan {
-            height: 83px;
-            min-height: 83px;
-            border: 1px solid #d3d3d3;
-            border-radius: 5px;
-            background: #fff;
-        }
-
-        .card-ringkasan .card-body {
-            padding: 12px;
-        }
-
-        .card-ringkasan p {
-            font-size: 12px;
-            color: #555;
-            margin-bottom: 7px;
-        }
-
         .angka {
-            font-size: 24px;
-            line-height: 1.2;
+            font-size: 2rem;
             font-weight: bold;
             color: #0d6efd;
-            margin: 0;
         }
 
-        /* =====================================
-           PRINT
-        ===================================== */
+        /* ===================================
+           PENGATURAN CETAK
+        =================================== */
 
         @media print {
 
+            /* Sembunyikan seluruh elemen halaman */
+            body * {
+                visibility: hidden !important;
+            }
+
+            /* Tampilkan hanya bagian laporan */
+            #areaCetak,
+            #areaCetak * {
+                visibility: visible !important;
+            }
+
+            /* Atur posisi konten laporan */
+            #areaCetak {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 10px !important;
+            }
+
+            /* Sembunyikan tombol dan filter */
             .no-print,
             .dt-search,
             .dt-length,
@@ -296,41 +181,73 @@ $jumlah_siswa = count($data_rekap);
                 display: none !important;
             }
 
-            .layout-row > :first-child {
-                display: none !important;
-            }
-
-            main {
+            /* Hilangkan batas lebar kolom Bootstrap */
+            #areaCetak.col-md-9,
+            #areaCetak.col-lg-10 {
                 width: 100% !important;
-                margin-left: 0 !important;
-                max-width: 100% !important;
+                flex: none !important;
             }
 
-            .card {
+            /* Rapikan card */
+            #areaCetak .card {
                 border: 1px solid #ccc !important;
                 box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            /* Rapikan tabel */
+            #areaCetak .table-responsive {
+                overflow: visible !important;
+            }
+
+            #areaCetak table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            #areaCetak th,
+            #areaCetak td {
+                border: 1px solid #ccc !important;
+                padding: 8px !important;
+            }
+
+            /* Warna header tabel tetap terlihat */
+            #areaCetak .table-dark th {
+                background-color: #212529 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            /* Warna badge tetap terlihat */
+            #areaCetak .badge {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             body {
-                font-size: 12px;
+                font-size: 12px !important;
+                background: white !important;
+            }
+
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
             }
         }
-
     </style>
 </head>
 
 <body>
 
 <div class="container-fluid">
-
-    <!-- BARIS UTAMA SIDEBAR DAN KONTEN -->
-    <div class="row layout-row">
+    <div class="row">
 
         <!-- SIDEBAR -->
         <?php include 'layout/sidebar.php'; ?>
 
         <!-- KONTEN UTAMA -->
-        <main class="col-md-9 col-lg-10 p-4">
+        <main id="areaCetak" class="col-md-9 col-lg-10 p-4">
 
             <div class="container-fluid">
 
@@ -338,39 +255,38 @@ $jumlah_siswa = count($data_rekap);
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
                     <div>
-                        <h4 class="judul-halaman">
-                            Rekap Poin Pelanggaran Siswa
-                        </h4>
+                        <h2>Rekap Poin Pelanggaran Siswa</h2>
 
-                        <p class="deskripsi mb-0">
+                        <p class="text-muted mb-0">
                             Ringkasan jumlah pelanggaran dan poin setiap siswa.
                         </p>
                     </div>
 
                     <div class="d-flex gap-2 no-print">
 
-                        <a href="dashboard.php" class="btn btn-secondary btn-sm">
+                        <a href="dashboard.php" class="btn btn-primary">
                             Kembali ke Dashboard
                         </a>
 
                         <button type="button"
                                 onclick="window.print()"
-                                class="btn btn-success btn-sm">
+                                class="btn btn-success">
                             Cetak Rekap
                         </button>
 
                     </div>
-
                 </div>
 
                 <!-- RINGKASAN -->
                 <div class="row g-3 mb-4">
 
+                    <!-- JUMLAH SISWA -->
                     <div class="col-md-4">
-                        <div class="card card-ringkasan shadow-sm">
+                        <div class="card shadow-sm h-100">
+
                             <div class="card-body">
 
-                                <p>
+                                <p class="text-muted mb-1">
                                     Jumlah Siswa
                                 </p>
 
@@ -382,11 +298,13 @@ $jumlah_siswa = count($data_rekap);
                         </div>
                     </div>
 
+                    <!-- TOTAL POIN -->
                     <div class="col-md-4">
-                        <div class="card card-ringkasan shadow-sm">
+                        <div class="card shadow-sm h-100">
+
                             <div class="card-body">
 
-                                <p>
+                                <p class="text-muted mb-1">
                                     Total Poin
                                 </p>
 
@@ -398,11 +316,13 @@ $jumlah_siswa = count($data_rekap);
                         </div>
                     </div>
 
+                    <!-- JUMLAH CATATAN -->
                     <div class="col-md-4">
-                        <div class="card card-ringkasan shadow-sm">
+                        <div class="card shadow-sm h-100">
+
                             <div class="card-body">
 
-                                <p>
+                                <p class="text-muted mb-1">
                                     Jumlah Catatan Pelanggaran
                                 </p>
 
@@ -420,9 +340,11 @@ $jumlah_siswa = count($data_rekap);
                 <div class="card shadow-sm mb-4 no-print">
 
                     <div class="card-header bg-primary text-white">
+
                         <h5 class="mb-0">
                             Pencarian dan Filter Siswa
                         </h5>
+
                     </div>
 
                     <div class="card-body">
@@ -479,11 +401,11 @@ $jumlah_siswa = count($data_rekap);
 
                                 <div class="col-md-3 d-flex align-items-end gap-2">
 
-                                    <button type="submit" class="btn btn-primary btn-sm">
+                                    <button type="submit" class="btn btn-primary">
                                         Cari
                                     </button>
 
-                                    <a href="rekap_poin.php" class="btn btn-secondary btn-sm">
+                                    <a href="rekap_poin.php" class="btn btn-danger">
                                         Reset
                                     </a>
 
@@ -499,10 +421,12 @@ $jumlah_siswa = count($data_rekap);
                 <!-- TABEL REKAP -->
                 <div class="card shadow-sm">
 
-                    <div class="card-header bg-dark text-white">
+                    <div class="card-header bg-primary text-white">
+
                         <h5 class="mb-0">
                             Data Rekap Poin Siswa
                         </h5>
+
                     </div>
 
                     <div class="card-body">
@@ -510,9 +434,10 @@ $jumlah_siswa = count($data_rekap);
                         <div class="table-responsive">
 
                             <table id="tabelRekap"
-                                   class="table table-striped table-bordered table-hover align-middle w-100">
+                                   class="table table-striped table-bordered table-hover align-middle">
 
                                 <thead class="table-dark">
+
                                     <tr>
                                         <th>No</th>
                                         <th>NIS</th>
@@ -521,6 +446,7 @@ $jumlah_siswa = count($data_rekap);
                                         <th>Jumlah Pelanggaran</th>
                                         <th>Total Poin</th>
                                     </tr>
+
                                 </thead>
 
                                 <tbody>
@@ -548,9 +474,11 @@ $jumlah_siswa = count($data_rekap);
                                             </td>
 
                                             <td class="text-center">
+
                                                 <span class="badge bg-warning text-dark">
                                                     <?= (int) $data['total_poin']; ?> poin
                                                 </span>
+
                                             </td>
 
                                         </tr>
@@ -578,16 +506,18 @@ $jumlah_siswa = count($data_rekap);
     </div>
 </div>
 
-<!-- JAVASCRIPT -->
-
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
 
 <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.min.js"></script>
 
+<!-- INISIALISASI DATATABLES -->
 <script>
 $(document).ready(function () {
 
@@ -603,8 +533,10 @@ $(document).ready(function () {
 
         paging: true,
 
+        // Total poin tertinggi ditampilkan lebih dahulu
         order: [[5, 'desc'], [2, 'asc']],
 
+        // Kolom No tidak perlu diurutkan atau dicari
         columnDefs: [
             {
                 orderable: false,
@@ -613,6 +545,7 @@ $(document).ready(function () {
             }
         ],
 
+        // Nomor otomatis
         drawCallback: function () {
 
             var api = this.api();
@@ -647,10 +580,15 @@ $(document).ready(function () {
             emptyTable: "Belum ada data rekap poin siswa",
 
             paginate: {
+
                 first: "Pertama",
+
                 last: "Terakhir",
+
                 next: "Berikutnya",
+
                 previous: "Sebelumnya"
+
             }
 
         }
